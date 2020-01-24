@@ -3,8 +3,13 @@
 import argparse
 import logging.config
 import os
+import tensorflow as tf
 
 from google.cloud import storage
+from tensorflow.keras import models
+from tensorflow.keras import layers
+from tensorflow.keras import activations
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 """
 This module is an example for a single Python application with some
@@ -77,7 +82,14 @@ def download_prepare_data(bucket_name, prefix, limit):
       print("Non jpg found: %s" % fn)
 
 
-def train_and_evaluate(bucket_name, prefix, limit, download):
+def train_and_evaluate(
+    bucket_name,
+    prefix,
+    limit,
+    download,
+    img_size,
+    batch_size
+):
   """Train and evaluate the model."""
   if download:
     download_prepare_data(bucket_name, prefix, limit)
@@ -85,6 +97,15 @@ def train_and_evaluate(bucket_name, prefix, limit, download):
     print("Not downloading data")
 
   # FIXME: train a model
+  img_datagen = ImageDataGenerator(rescale=1 / 255.0)
+
+  img_generator = img_datagen.flow_from_directory(
+      'data',
+      target_size=(img_size, img_size),
+      batch_size=batch_size,
+      class_mode='binary')
+
+
 
 
 if __name__ == '__main__':
