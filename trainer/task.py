@@ -48,7 +48,7 @@ def _download_file(bucket_name, remote_name, dest_name):
   )
 
 
-def download_prepare_data(bucket_name, prefix, limit):
+def download_prepare_data(bucket_name, prefix):
   """Download and prepare the data for training.
 
   Args:
@@ -57,16 +57,7 @@ def download_prepare_data(bucket_name, prefix, limit):
   """
   names = _list_files_by_prefix(bucket_name, prefix)
 
-  # name -> data/dogs_cats/cat.1.jpg
-  # --> data/cat/cat.1.jpg
-
-  N = limit
-  k = 0
   for name in names:
-    k += 1
-    if k > N:
-      break
-
     fn = name.split('/')[-1]
     if fn.endswith('jpg'):
       label = fn.split('.')[0]
@@ -85,7 +76,6 @@ def download_prepare_data(bucket_name, prefix, limit):
 def train_and_evaluate(
     bucket_name,
     prefix,
-    limit,
     download,
     img_size,
     batch_size,
@@ -94,7 +84,7 @@ def train_and_evaluate(
 ):
   """Train and evaluate the model."""
   if download:
-    download_prepare_data(bucket_name, prefix, limit)
+    download_prepare_data(bucket_name, prefix)
   else:
     print("Not downloading data")
 
@@ -118,8 +108,6 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("--bucket-name", required=True)
   parser.add_argument("--prefix", required=True)
-  parser.add_argument("--limit", default=5, type=int,
-                      help="Download only this number of files")
   parser.add_argument("--epochs", required=True, type=int)
   parser.add_argument("--download", action='store_true')
 
@@ -127,7 +115,12 @@ if __name__ == '__main__':
 
   bucket_name = args.bucket_name
   prefix = args.prefix
-  limit = args.limit
   download = args.download
+  epochs = args.epochs
 
-  train_and_evaluate(bucket_name, prefix, limit, download)
+  train_and_evaluate(bucket_name,
+                     prefix,
+                     download,
+                     128,
+                     1,
+                     epochs)
