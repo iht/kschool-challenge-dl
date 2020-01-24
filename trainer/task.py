@@ -5,7 +5,10 @@ import logging.config
 import os
 import tensorflow as tf
 
+from .model import build_model
 from google.cloud import storage
+from tensorflow.keras import optimizers
+from tensorflow.keras import losses
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 """
@@ -85,7 +88,9 @@ def train_and_evaluate(
     limit,
     download,
     img_size,
-    batch_size
+    batch_size,
+    n_imgs,
+    epochs
 ):
   """Train and evaluate the model."""
   if download:
@@ -102,7 +107,11 @@ def train_and_evaluate(
       batch_size=batch_size,
       class_mode='binary')
 
+  steps = int(n_imgs / batch_size)
 
+  model = build_model(img_size)
+  model.compile(optimizer=optimizers.Adam(), loss=losses.binary_crossentropy())
+  model.fit_generator(img_generator, epochs=epochs, steps_per_epoch=steps)
 
 
 if __name__ == '__main__':
