@@ -1,6 +1,9 @@
 """A simple main file to showcase the template."""
 
+import argparse
 import logging.config
+
+from google.cloud import storage
 
 """
 This module is an example for a single Python application with some
@@ -12,75 +15,49 @@ template. Please feel free to remove this, or the other
 (sklearn_main.py), or adapt as you need.
 """
 
-
-def add(x, y):
-    """Add the given parameters.
-
-    :param x: x value
-    :type x: int
-    :param y: y value
-    :type y: int
-    :return: the sum of x and y
-    :rtype: int
-    """
-    return x + y
+LOGGER = logging.getLogger()
 
 
-def subtract(x, y):
-    """Substract the given parameters.
+def _list_files_by_prefix(bucket_name, prefix):
+  storage_client = storage.Client()
+  # Note: Client.list_blobs requires at least package version 1.17.0.
+  blobs = storage_client.list_blobs(
+      bucket_name, prefix=prefix, delimiter=None)
+  # n_objs = len(blobs)
+  # LOGGER.info("Found %d objects" % n_objs)
 
-    :param x: x value
-    :type x: int
-    :param y: y value
-    :type y: int
-    :return: the diff of x and y
-    :rtype: int
-    """
-    return x - y
-
-
-def multiply(x, y):
-    """Multiply the given parameters.
-
-    :param x: x value
-    :type x: int
-    :param y: y value
-    :type y: int
-    :return: the multiplication of x and y
-    :rtype: int
-    """
-    return x * y
+  N = 5
+  k = 0
+  for blob in blobs:
+    k += 1
+    print("Sample name found in bucket: %s" % blob.name)
+    if k > N:
+      break
 
 
-def divide(x, y):
-    """Divide the given parameters.
+def download_prepare_data(bucket_name, prefix):
+  """Download and prepare the data for training.
 
-    :param x: x value
-    :type x: int
-    :param y: y value
-    :type y: int
-    :return: the division of x by y
-    :rtype: int
-    """
-    return x / y
+  Args:
+    bucket_name: Name of the bucket where the data is stored
+    prefix: Prefix to the path of all the files
+  """
+  _list_files_by_prefix(bucket_name, prefix)
 
 
-def main():
-    """Entry point for your module."""
-    logger = logging.getLogger()
-    x1 = 2
-    y1 = 3
-    logger.info('Realizando suma')
-    logger.debug('{x} + {y} = '.format(x=x1, y=y1) + str(add(x1, y1)))
-    logger.info('Realizando resta')
-    logger.debug('{x} - {y} = '.format(x=x1, y=y1) + str(subtract(x1, y1)))
-    logger.info('Realizando multiplicación')
-    logger.debug('{x} * {y} = '.format(x=x1, y=y1) + str(multiply(x1, y1)))
-    logger.info('Realizando división')
-    logger.debug('{x} / {y} = '.format(x=x1, y=y1) + str(divide(x1, y1)))
-    logger.debug('TERMINADO')
-    logger.critical('FAIL')
+def train_and_evaluate(bucket_name, prefix):
+  """Train and evaluate the model."""
+  download_prepare_data(bucket_name, prefix)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--bucket-name", required=True)
+  parser.add_argument("--prefix", required=True)
+
+  args = parser.parse_args()
+
+  bucket_name = args.bucket_name
+  prefix = args.prefix
+
+  train_and_evaluate(bucket_name, prefix)
