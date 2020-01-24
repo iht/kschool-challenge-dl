@@ -1,4 +1,4 @@
-gcloud ai-platform jobs submit generator_train_`date +"%s"` \
+gcloud ai-platform jobs submit training generator_train_`date +"%s"` \
   --python-version=3.7 \
   --runtime-version=1.15 \
   --scale-tier basic \
