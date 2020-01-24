@@ -6,9 +6,6 @@ import os
 import tensorflow as tf
 
 from google.cloud import storage
-from tensorflow.keras import models
-from tensorflow.keras import layers
-from tensorflow.keras import activations
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 """
