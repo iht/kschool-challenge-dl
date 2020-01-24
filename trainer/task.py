@@ -43,7 +43,7 @@ def _download_file(bucket_name, remote_name, dest_name):
   )
 
 
-def download_prepare_data(bucket_name, prefix):
+def download_prepare_data(bucket_name, prefix, limit):
   """Download and prepare the data for training.
 
   Args:
@@ -80,6 +80,8 @@ def download_prepare_data(bucket_name, prefix):
 def train_and_evaluate(bucket_name, prefix, limit):
   """Train and evaluate the model."""
   download_prepare_data(bucket_name, prefix, limit)
+
+  # FIXME: train a model
 
 
 if __name__ == '__main__':
