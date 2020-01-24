@@ -100,7 +100,11 @@ def train_and_evaluate(
   steps = int(n_imgs / batch_size)
 
   model = build_model(img_size)
-  model.compile(optimizer=optimizers.Adam(), loss=losses.binary_crossentropy())
+  model.compile(
+      optimizer=optimizers.Adam(),
+      loss=losses.binary_crossentropy,
+      metrics=['accuracy']
+  )
   model.fit_generator(img_generator, epochs=epochs, steps_per_epoch=steps)
 
 
@@ -123,4 +127,5 @@ if __name__ == '__main__':
                      download,
                      128,
                      1,
+                     5,
                      epochs)
