@@ -23,16 +23,23 @@ def _list_files_by_prefix(bucket_name, prefix):
   # Note: Client.list_blobs requires at least package version 1.17.0.
   blobs = storage_client.list_blobs(
       bucket_name, prefix=prefix, delimiter=None)
-  # n_objs = len(blobs)
-  # LOGGER.info("Found %d objects" % n_objs)
 
-  N = 5
-  k = 0
-  for blob in blobs:
-    k += 1
-    print("Sample name found in bucket: %s" % blob.name)
-    if k > N:
-      break
+  names = [blob.name for blob in blobs]
+  return names
+
+
+def _download_file(bucket_name, remote_name, dest_name):
+  storage_client = storage.Client()
+
+  bucket = storage_client.bucket(bucket_name)
+  blob = bucket.blob(remote_name)
+  blob.download_to_filename(dest_name)
+
+  print(
+      "Blob {} downloaded to {}.".format(
+          remote_name, dest_name
+      )
+  )
 
 
 def download_prepare_data(bucket_name, prefix):
