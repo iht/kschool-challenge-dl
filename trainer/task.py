@@ -77,9 +77,12 @@ def download_prepare_data(bucket_name, prefix, limit):
       print("Non jpg found: %s" % fn)
 
 
-def train_and_evaluate(bucket_name, prefix, limit):
+def train_and_evaluate(bucket_name, prefix, limit, download):
   """Train and evaluate the model."""
-  download_prepare_data(bucket_name, prefix, limit)
+  if download:
+    download_prepare_data(bucket_name, prefix, limit)
+  else:
+    print("Not downloading data")
 
   # FIXME: train a model
 
@@ -90,11 +93,14 @@ if __name__ == '__main__':
   parser.add_argument("--prefix", required=True)
   parser.add_argument("--limit", default=5, type=int,
                       help="Download only this number of files")
+  parser.add_argument("--epochs", required=True, type=int)
+  parser.add_argument("--download", action='store_true')
 
   args = parser.parse_args()
 
   bucket_name = args.bucket_name
   prefix = args.prefix
   limit = args.limit
+  download = args.download
 
-  train_and_evaluate(bucket_name, prefix, limit)
+  train_and_evaluate(bucket_name, prefix, limit, download)
