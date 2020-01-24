@@ -2,6 +2,7 @@
 
 import argparse
 import logging.config
+import os
 
 from google.cloud import storage
 
@@ -49,22 +50,49 @@ def download_prepare_data(bucket_name, prefix):
     bucket_name: Name of the bucket where the data is stored
     prefix: Prefix to the path of all the files
   """
-  _list_files_by_prefix(bucket_name, prefix)
+  names = _list_files_by_prefix(bucket_name, prefix)
+
+  # name -> data/dogs_cats/cat.1.jpg
+  # --> data/cat/cat.1.jpg
+
+  N = limit
+  k = 0
+  for name in names:
+    k += 1
+    if k > N:
+      break
+
+    fn = name.split('/')[-1]
+    if fn.endswith('jpg'):
+      label = fn.split('.')[0]
+      dest_dir = 'data/%s/' % label
+      dest_name = dest_dir + fn
+
+      # Check that dest dir exists
+      if not os.path.exists(dest_dir):
+        os.makedirs(dest_dir)
+
+      _download_file(bucket_name, name, dest_name)
+    else:
+      print("Non jpg found: %s" % fn)
 
 
-def train_and_evaluate(bucket_name, prefix):
+def train_and_evaluate(bucket_name, prefix, limit):
   """Train and evaluate the model."""
-  download_prepare_data(bucket_name, prefix)
+  download_prepare_data(bucket_name, prefix, limit)
 
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("--bucket-name", required=True)
   parser.add_argument("--prefix", required=True)
+  parser.add_argument("--limit", default=5, type=int,
+                      help="Download only this number of files")
 
   args = parser.parse_args()
 
   bucket_name = args.bucket_name
   prefix = args.prefix
+  limit = args.limit
 
-  train_and_evaluate(bucket_name, prefix)
+  train_and_evaluate(bucket_name, prefix, limit)
