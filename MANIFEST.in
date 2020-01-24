@@ -1,0 +1,3 @@
+include versioneer.py
+include trainer/_version.py
+include requirements.txt
