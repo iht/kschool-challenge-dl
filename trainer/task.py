@@ -163,25 +163,29 @@ if __name__ == '__main__':
   parser.add_argument("--bucket-name", required=True)
   parser.add_argument("--prefix", required=True)
   parser.add_argument("--epochs", required=True, type=int)
+  parser.add_argument("--img-size", default=128, type=int)
   parser.add_argument("--download", action='store_true')
   parser.add_argument("--job-dir", required=False)
   parser.add_argument("--train-split", default=0.9, type=float)
 
   args = parser.parse_args()
 
+  # Tuneable hyperparameters
+  epochs = args.epochs
+  img_size = args.img_size
+
   bucket_name = args.bucket_name
   prefix = args.prefix
   download = args.download
-  epochs = args.epochs
   job_dir = args.job_dir
   train_split = args.train_split
 
   train_and_evaluate(bucket_name,
                      prefix,
                      download,
-                     128,
-                     1,
-                     5,
+                     img_size,
+                     100,
+                     4000,
                      epochs,
                      job_dir,
                      train_split)
