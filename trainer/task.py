@@ -5,6 +5,7 @@ import argparse
 import logging.config
 import os
 import random
+import time
 import tensorflow as tf
 
 from .model import build_model
@@ -149,7 +150,8 @@ def train_and_evaluate(
 
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
-  path_in_bucket = 'saved_models/' + trainer.__version__ + '/'
+  timestamp = int(round(time.time() * 1000))
+  path_in_bucket = 'saved_models/' + trainer.__version__ + '/' + timestamp + '/'
 
   # Upload to GCS
   client = storage.Client()
