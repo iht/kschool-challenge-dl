@@ -187,8 +187,8 @@ if __name__ == '__main__':
                      prefix,
                      download,
                      img_size,
-                     100,
-                     4000,
+                     10,
+                     40,
                      epochs,
                      job_dir,
                      train_split)
