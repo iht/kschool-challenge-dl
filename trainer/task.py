@@ -1,5 +1,6 @@
 """A simple main file to showcase the template."""
 
+import trainer
 import argparse
 import logging.config
 import os
@@ -143,6 +144,20 @@ def train_and_evaluate(
 
   # FIXME: save model
   # FIXME: upload to GCS
+
+  localdir = 'my_model'
+  tf.keras.experimental.export_saved_model(model, localdir)
+  # TF 2.0 --> model.save(...)
+
+  # gs://bucket_name/prefix1/prefix2/....
+  dest_bucket_name = job_dir.split('/')[2]
+  path_in_bucket = 'saved_models' + trainer.__version__
+
+  # Upload to GCS
+  client = storage.Client()
+  bucket = client.bucket(dest_bucket_name)
+  LOGGER.info("Uploading model to gs://%s/%s" % (bucket_name, path_in_bucket))
+  upload_local_directory_to_gcs(localdir, bucket, path_in_bucket)
 
 
 if __name__ == '__main__':
