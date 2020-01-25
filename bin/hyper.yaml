@@ -14,5 +14,6 @@ trainingInput:
       - parameterName: img-size
         type: DISCRETE
         discreteValues:
-          - 128
           - 64
+          - 128
+
