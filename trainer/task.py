@@ -143,9 +143,6 @@ def train_and_evaluate(
   summary_writer.add_summary(summary)
   summary_writer.flush()
 
-  # FIXME: save model
-  # FIXME: upload to GCS
-
   localdir = 'my_model'
   tf.keras.experimental.export_saved_model(model, localdir)
   # TF 2.0 --> model.save(...)
