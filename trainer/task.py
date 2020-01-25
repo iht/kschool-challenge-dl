@@ -8,6 +8,7 @@ import tensorflow as tf
 
 from .model import build_model
 from google.cloud import storage
+from tensorflow.core.framework.summary_pb2 import Summary
 from tensorflow.keras import optimizers
 from tensorflow.keras import losses
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -128,6 +129,17 @@ def train_and_evaluate(
 
   print('MODEL LOSS: %.4f' % model_loss)
   print('MODEL ACC: %.4f' % model_acc)
+
+  # Report metrics to Cloud ML Engine for hypertuning
+  metric_tag = 'accuracy_dogs_cats'
+  summary = Summary(value=[Summary.Value(tag=metric_tag,
+                                         simple_value=model_acc)])
+  eval_path = os.path.join(job_dir, metric_tag)
+  LOGGER.info("Writing metrics to %s" % eval_path)
+  summary_writer = tf.summary.FileWriter(eval_path)
+
+  summary_writer.add_summary(summary)
+  summary_writer.flush()
 
   # FIXME: save model
   # FIXME: upload to GCS
