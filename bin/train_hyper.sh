@@ -6,7 +6,7 @@ gcloud ai-platform jobs submit training generator_train_ht_`date +"%s"` \
   --module-name trainer.task \
   --job-dir=gs://ihr-kschool-training/tmp/ \
   --region us-central1 \
-  --config hyper.yaml
+  --config ./bin/hyper.yaml
   -- \
   --download \
   --bucket-name kschool-challenge-vcm \
