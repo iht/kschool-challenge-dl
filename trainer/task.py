@@ -150,7 +150,7 @@ def train_and_evaluate(
 
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
-  timestamp = int(round(time.time() * 1000))
+  timestamp = str(int(round(time.time() * 1000)))
   path_in_bucket = 'saved_models/' + trainer.__version__ + '/' + timestamp + '/'
 
   # Upload to GCS
