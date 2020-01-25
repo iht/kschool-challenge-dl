@@ -8,7 +8,7 @@ gcloud ai-platform jobs submit training generator_train_`date +"%s"` \
   --region us-central1 \
   -- \
   --epochs 5 \
-  --img_size 128 \
+  --img-size 128 \
   --download \
   --bucket-name kschool-challenge-vcm \
   --prefix data/dogs_cats/
