@@ -3,17 +3,16 @@ trainingInput:
     goal: MAXIMIZE
     hyperparameterMetricTag: accuracy_dogs_cats
     maxTrials: 40
-    maxParallelTrials: 2
+    maxParallelTrials: 4
     enableTrialEarlyStopping: True
     params:
       - parameterName: epochs
         type: INTEGER
         minValue: 10
-        maxValue: 80
+        maxValue: 50
         scaleType: UNIT_LINEAR_SCALE
       - parameterName: img-size
         type: DISCRETE
         discreteValues:
           - 128
-          - 256
-          - 512
+          - 64
