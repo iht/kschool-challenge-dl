@@ -80,7 +80,8 @@ def train_and_evaluate(
     img_size,
     batch_size,
     n_imgs,
-    epochs
+    epochs,
+    job_dir
 ):
   """Train and evaluate the model."""
   if download:
@@ -107,13 +108,13 @@ def train_and_evaluate(
   )
   model.fit_generator(img_generator, epochs=epochs, steps_per_epoch=steps)
 
-
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("--bucket-name", required=True)
   parser.add_argument("--prefix", required=True)
   parser.add_argument("--epochs", required=True, type=int)
   parser.add_argument("--download", action='store_true')
+  parser.add_argument("--job-dir", required=False)
 
   args = parser.parse_args()
 
@@ -121,6 +122,7 @@ if __name__ == '__main__':
   prefix = args.prefix
   download = args.download
   epochs = args.epochs
+  job_dir = args.job_dir
 
   train_and_evaluate(bucket_name,
                      prefix,
@@ -128,4 +130,5 @@ if __name__ == '__main__':
                      128,
                      1,
                      5,
-                     epochs)
+                     epochs,
+                     job_dir)
