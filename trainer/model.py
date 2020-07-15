@@ -12,7 +12,9 @@ def build_model(img_size):
   m = models.Sequential()
   m.add(layers.Conv2D(32, (3, 3),
                       activation=activations.relu,
-                      input_shape=shape))
+                      input_shape=shape,
+                      name='image'))
+
   m.add(layers.MaxPooling2D(2, 2))
   m.add(layers.Conv2D(64, (3, 3), activation='relu'))
   m.add(layers.MaxPooling2D((2, 2)))

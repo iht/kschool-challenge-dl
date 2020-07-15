@@ -16,10 +16,11 @@ class MyImagePreprocessor:
     """
     self._img_size = img_size
     self._batch_size = batch_size
+    self._reduction_factor = 255.0
 
-    self._img_datagen = ImageDataGenerator(rescale=1 / 255.0)
+    self._img_datagen = ImageDataGenerator(rescale=1 / self._reduction_factor)
 
-  def generator(self, dirname):
+  def generator(self, dirname, ):
     """Create and return a generator for the preprocessed images.
 
     Args:
@@ -33,6 +34,6 @@ class MyImagePreprocessor:
 
     return self._img_generator
 
-  def img_data_generator(self):
+  def preprocess_params(self):
     """Get the ImageDataGenerator."""
-    return self._img_datagen
+    return (self._img_size, self._reduction_factor)

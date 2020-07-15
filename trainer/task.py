@@ -1,6 +1,7 @@
 """A simple main file to showcase the template."""
 
 import argparse
+import copy
 import logging.config
 import os
 import pickle
@@ -136,14 +137,14 @@ def train_and_evaluate(
   write_summary_to_aiplatform(metric_tag, job_dir, model_acc)
 
   # Save model
-  localdir = 'export/'
-  localmodel = '%s/keras_model/' % localdir
+  localdir = 'export'
+  localmodel = os.path.join(localdir, 'keras_model')
   model.save(localmodel, save_format='tf')
 
   # Save preprocessor
-  localpreprocfn = '%s/preprocess.pkl' % localdir
+  localpreprocfn = os.path.join(localdir, 'preprocess.pkl')
   with open(localpreprocfn, 'wb') as f:
-    pickle.dump(preprocessor.img_data_generator, f)
+    pickle.dump(copy.deepcopy(preprocessor.img_data_generator()), f)
 
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
@@ -177,7 +178,7 @@ if __name__ == '__main__':
 
   # Other hyperparameters
   batch_size = 50
-  num_images_generator = 4000
+  num_images_generator = 400
 
   bucket_name = args.bucket_name
   prefix = args.prefix
