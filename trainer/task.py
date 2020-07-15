@@ -137,9 +137,9 @@ def train_and_evaluate(
       loss=losses.binary_crossentropy,
       metrics=['accuracy']
   )
-  model.fit_generator(img_generator, epochs=epochs, steps_per_epoch=steps)
+  model.fit(img_generator, epochs=epochs, steps_per_epoch=steps)
 
-  model_loss, model_acc = model.evaluate_generator(test_generator)
+  model_loss, model_acc = model.evaluate(test_generator)
 
   print('MODEL LOSS: %.4f' % model_loss)
   print('MODEL ACC: %.4f' % model_acc)
