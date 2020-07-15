@@ -83,6 +83,33 @@ def download_prepare_data(bucket_name, prefix, train_split):
       print("Non jpg found: %s" % fn)
 
 
+def preprocess_data(dirname, img_size, batch_size):
+  """Preprocess the data for training.
+
+  Args:
+    dirname: The name of the directory with the images. It should contain the
+             train and test subdirectories.
+    img_size: The size of the resulting images.
+    batch_size: The size of the batch (for training purposes)
+
+  """
+  img_datagen = ImageDataGenerator(rescale=1 / 255.0)
+
+  train_generator = img_datagen.flow_from_directory(
+      '%s/train' % dirname,
+      target_size=(img_size, img_size),
+      batch_size=batch_size,
+      class_mode='binary')
+
+  test_generator = img_datagen.flow_from_directory(
+      '%s/test' % dirname,
+      target_size=(img_size, img_size),
+      batch_size=batch_size,
+      class_mode='binary')
+
+  return train_generator, test_generator
+
+
 def train_and_evaluate(
     bucket_name,
     prefix,
@@ -100,19 +127,7 @@ def train_and_evaluate(
   else:
     print("Not downloading data")
 
-  img_datagen = ImageDataGenerator(rescale=1 / 255.0)
-
-  img_generator = img_datagen.flow_from_directory(
-      'data/train',
-      target_size=(img_size, img_size),
-      batch_size=batch_size,
-      class_mode='binary')
-
-  test_generator = img_datagen.flow_from_directory(
-      'data/test',
-      target_size=(img_size, img_size),
-      batch_size=batch_size,
-      class_mode='binary')
+  img_generator, test_generator = preprocess_data('data', img_size, batch_size)
 
   steps = int(n_imgs / batch_size)
 
