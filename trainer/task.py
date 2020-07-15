@@ -1,6 +1,5 @@
 """A simple main file to showcase the template."""
 
-import trainer
 import argparse
 import logging.config
 import os
