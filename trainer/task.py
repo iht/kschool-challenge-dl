@@ -161,13 +161,14 @@ def train_and_evaluate(
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
   timestamp = str(int(round(time.time() * 1000)))
-  path_in_bucket = 'saved_models/' + trainer.__version__ + '/' + timestamp + '/'
+  path_in_bucket = 'saved_models/%d_%d/' % (epochs, img_size) + timestamp
 
   # Upload to GCS
   client = storage.Client()
   bucket = client.bucket(dest_bucket_name)
-  LOGGER.info("Uploading model to gs://%s/%s" % (dest_bucket_name,
-                                                 path_in_bucket))
+  LOGGER.info("Uploading model to gs://%s/%s" % (
+      dest_bucket_name,
+      path_in_bucket))
   upload_local_directory_to_gcs(localdir, bucket, path_in_bucket)
 
 
