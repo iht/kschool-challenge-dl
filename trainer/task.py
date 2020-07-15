@@ -3,17 +3,19 @@
 import argparse
 import logging.config
 import os
+import pickle
 import random
 import time
 
 from .model import build_model
+from .preprocessor import MyImagePreprocessor
 from .utils import upload_local_directory_to_gcs, write_summary_to_aiplatform
 from google.cloud import storage
 
 from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras import optimizers
 from tensorflow.keras import losses
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
 
 """
 This module is an example for a single Python application with some
@@ -83,33 +85,6 @@ def download_prepare_data(bucket_name, prefix, train_split):
       print("Non jpg found: %s" % fn)
 
 
-def preprocess_data(dirname, img_size, batch_size):
-  """Preprocess the data for training.
-
-  Args:
-    dirname: The name of the directory with the images. It should contain the
-             train and test subdirectories.
-    img_size: The size of the resulting images.
-    batch_size: The size of the batch (for training purposes)
-
-  """
-  img_datagen = ImageDataGenerator(rescale=1 / 255.0)
-
-  train_generator = img_datagen.flow_from_directory(
-      '%s/train' % dirname,
-      target_size=(img_size, img_size),
-      batch_size=batch_size,
-      class_mode='binary')
-
-  test_generator = img_datagen.flow_from_directory(
-      '%s/test' % dirname,
-      target_size=(img_size, img_size),
-      batch_size=batch_size,
-      class_mode='binary')
-
-  return train_generator, test_generator
-
-
 def train_and_evaluate(
     bucket_name,
     prefix,
@@ -127,7 +102,10 @@ def train_and_evaluate(
   else:
     print("Not downloading data")
 
-  img_generator, test_generator = preprocess_data('data', img_size, batch_size)
+  preprocessor = MyImagePreprocessor(img_size, batch_size)
+
+  img_generator = preprocessor.generator('data/train')
+  test_generator = preprocessor.generator('data/test')
 
   steps = int(n_imgs / batch_size)
 
@@ -157,8 +135,15 @@ def train_and_evaluate(
   metric_tag = 'accuracy_dogs_cats'
   write_summary_to_aiplatform(metric_tag, job_dir, model_acc)
 
-  localdir = 'my_model'
-  model.save(localdir)
+  # Save model
+  localdir = 'export/'
+  localmodel = '%s/keras_model/' % localdir
+  model.save(localmodel, save_format='tf')
+
+  # Save preprocessor
+  localpreprocfn = '%s/preprocess.pkl' % localdir
+  with open(localpreprocfn, 'wb') as f:
+    pickle.dump(preprocessor.img_data_generator, f)
 
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
