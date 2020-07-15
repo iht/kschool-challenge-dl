@@ -6,10 +6,12 @@ import os
 
 def upload_local_directory_to_gcs(local_path, bucket, gcs_path):
   """Upload a local directory, recursively, to GCS.
+
   Args:
    local_path: String with the local directory to be uploaded.
    bucket: Destination bucket object created with a GCS client
    gcs_path: Path in the bucket for the destination directory
+
   """
   assert os.path.isdir(local_path)
   for local_file in glob.glob(local_path + '/**'):
