@@ -156,8 +156,7 @@ def train_and_evaluate(
   summary_writer.flush()
 
   localdir = 'my_model'
-  tf.keras.experimental.export_saved_model(model, localdir)
-  # TF 2.0 --> model.save(...)
+  model.save(localdir)
 
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
