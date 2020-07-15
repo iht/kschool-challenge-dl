@@ -1,6 +1,13 @@
+# virtualenv name
+tf21/
+
+# data subdirectory
+data/
+
 # Idea and more
 *.iml
 *~
+*# 
 .cache/
 .idea/
 tests.xml
