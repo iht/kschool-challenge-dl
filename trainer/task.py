@@ -19,10 +19,6 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 This module is an example for a single Python application with some
 top level functions. The tests directory includes some unitary tests
 for these functions.
-
-This is one of two main files samples included in this
-template. Please feel free to remove this, or the other
-(sklearn_main.py), or adapt as you need.
 """
 
 LOGGER = logging.getLogger()
@@ -59,6 +55,7 @@ def download_prepare_data(bucket_name, prefix, train_split):
     bucket_name: Name of the bucket where the data is stored
     prefix: Prefix to the path of all the files
     train_split: Number between 0 and 1 for the train/test split
+
   """
   names = _list_files_by_prefix(bucket_name, prefix)
 
