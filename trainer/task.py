@@ -9,6 +9,8 @@ import time
 from .model import build_model
 from .utils import upload_local_directory_to_gcs, write_summary_to_aiplatform
 from google.cloud import storage
+
+from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras import optimizers
 from tensorflow.keras import losses
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -130,6 +132,11 @@ def train_and_evaluate(
   steps = int(n_imgs / batch_size)
 
   model = build_model(img_size)
+
+  # Report metrics to Tensorboard, to follow the training process
+  tensorboard_logdir = os.path.join(job_dir, 'tblogs')
+  tb_callback = TensorBoard(tensorboard_logdir)
+
   model.compile(
       optimizer=optimizers.Adam(),
       loss=losses.binary_crossentropy,
