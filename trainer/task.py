@@ -144,7 +144,7 @@ def train_and_evaluate(
   # Save preprocessor
   localpreprocfn = os.path.join(localdir, 'preprocess.pkl')
   with open(localpreprocfn, 'wb') as f:
-    pickle.dump(copy.deepcopy(preprocessor.img_data_generator()), f)
+    pickle.dump(copy.deepcopy(preprocessor.preprocess_params()), f)
 
   # gs://bucket_name/prefix1/prefix2/....
   dest_bucket_name = job_dir.split('/')[2]
