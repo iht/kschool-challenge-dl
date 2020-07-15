@@ -192,6 +192,10 @@ if __name__ == '__main__':
   epochs = args.epochs
   img_size = args.img_size
 
+  # Other hyperparameters
+  batch_size = 50
+  num_images_generator = 4000
+
   bucket_name = args.bucket_name
   prefix = args.prefix
   download = args.download
@@ -202,8 +206,8 @@ if __name__ == '__main__':
                      prefix,
                      download,
                      img_size,
-                     50,
-                     4000,
+                     batch_size,
+                     num_images_generator,
                      epochs,
                      job_dir,
                      train_split)
