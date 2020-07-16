@@ -4,15 +4,11 @@ gcloud ai-platform jobs submit training generator_train_`date +"%s"` \
   --scale-tier basic \
   --package-path ./trainer \
   --module-name trainer.task \
-  --job-dir=gs://ihr-kschool-training/tmp/ \
+  --job-dir=gs://ihr-data/models/ \
   --region us-central1 \
   -- \
   --epochs 5 \
-  --img-size 128 \
+  --img-size 32 \
   --download \
   --bucket-name kschool-challenge-vcm \
   --prefix data/dogs_cats/
-
-
-  
-  

@@ -4,7 +4,7 @@ gcloud ai-platform jobs submit training generator_train_ht_`date +"%s"` \
   --scale-tier BASIC \
   --package-path ./trainer \
   --module-name trainer.task \
-  --job-dir=gs://ihr-kschool-training/tmp/ \
+  --job-dir=gs://ihr-data/models_hyper/ \
   --region us-central1 \
   --config ./bin/hyper.yaml \
   -- \
